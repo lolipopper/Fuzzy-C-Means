@@ -158,7 +158,7 @@ def update_membership(dataset, membership_table, num_clusters, m_value):
 	return new_membership_table
 
 def max_membership_change(mem_old, mem_new):
-	max_changes = mem_new[0][0]
+	max_changes = 0
 	for i in range(len(mem_new)):
 		for j in range(len(mem_new[i])):
 			temp = abs(mem_new[i][j] - mem_old[i][j])

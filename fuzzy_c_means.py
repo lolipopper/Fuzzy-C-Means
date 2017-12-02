@@ -1,5 +1,3 @@
-import pandas
-
 def import_file_data(filename):
 	file = open(filename)
 	fl = file.readlines()
@@ -45,6 +43,22 @@ def convert_to_int(dataset):
 		# print(data)
 	return ret
 
+def normalize_data(dataset):
+	mini = list(dataset[0])
+	maks = list(dataset[0])
+	for data in dataset:
+		for i in range(len(data)):
+			if (mini[i] > data[i]):
+				mini[i] = data[i]
+				# print("MINI")
+			if (maks[i] < data[i]):
+				maks[i] = data[i]
+				# print("MAKS")
+	ret = []
+	for data in dataset:
+		ret.append([(data[i]-mini[i])/(maks[i]-mini[i]) for i in range(len(data))])
+	return ret
+
 filename = "CensusIncome/CencusIncome.data.txt"
 dataset = import_data(filename, [1,3,5,6,7,8,9,13])
 dataset, datalabels = separate_labels(dataset)
@@ -55,11 +69,17 @@ testset, testlabels = separate_labels(testset)
 dataset = convert_to_int(dataset)
 testset = convert_to_int(testset)
 
+# dataset = normalize_data(dataset)
+# testset = normalize_data(testset)
+
 for data in dataset:
 	print(data)
 print("TEST VVVVVVVV DATA ^^^^^^^^^^")
 for data in testset:
 	print(data)
+
+# print(datalabels)
+# print(testlabels)
 
 # data_frame = pandas.read_csv("CencusIncome.data.csv")
 # # print(data.as_matrix())

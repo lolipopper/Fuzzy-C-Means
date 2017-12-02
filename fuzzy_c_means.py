@@ -1,10 +1,6 @@
-<<<<<<< a91b877870fe931537350ca7c1490d7058599ed1
-=======
-import pandas
 import math
 import random
 
->>>>>>> Fuzzy
 def import_file_data(filename):
 	file = open(filename)
 	fl = file.readlines()
@@ -70,9 +66,9 @@ def init_membership_table(dataset, num_clusters):
 	i = 0
 	membership_table = []
 	for data in dataset:
-		membership_data = []
-		for j in range (0, num_clusters):
-			membership_data.append(random.uniform(0, 1))
+		membership_data = [random.random() for attr in data]
+		total = sum(membership_data)
+		membership_data = [x/total for x in membership_data]
 		membership_table.append(membership_data)
 	return membership_table
 
@@ -187,6 +183,7 @@ def evaluate(dataset, membership_table):
 			if(membership_table[i][j] > membership_table[i][temp]):
 				temp = j
 		ret[temp] += 1
+		i += 1
 	return ret
 
 filename = "CensusIncome/CencusIncome.data.txt"
@@ -199,8 +196,8 @@ testset, testlabels = separate_labels(testset)
 dataset = convert_to_int(dataset)
 testset = convert_to_int(testset)
 
-# dataset = normalize_data(dataset)
-# testset = normalize_data(testset)
+dataset = normalize_data(dataset)
+testset = normalize_data(testset)
 
 
 num_clusters = int(input("Num Clusters: "))

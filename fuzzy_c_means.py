@@ -155,8 +155,7 @@ def calculate_centroid(dataset, membership_table, num_clusters, m_value):
 		centroids.append(data_divided_number(divident,divisor))
 	return centroids
 
-def update_membership(dataset, membership_table, num_clusters, m_value):
-	centroids = calculate_centroid(dataset, membership_table, num_clusters, m_value)
+def calc_membership(centroids, dataset, num_clusters, m_value):
 	new_membership_table = []
 	i = 0
 	for data in dataset:
@@ -170,6 +169,12 @@ def update_membership(dataset, membership_table, num_clusters, m_value):
 
 		new_membership_table.append(new_membership_data)
 		i+=1
+	return new_membership_table
+
+
+def update_membership(dataset, membership_table, num_clusters, m_value):
+	centroids = calculate_centroid(dataset, membership_table, num_clusters, m_value)
+	new_membership_table = calc_membership(centroids, dataset, num_clusters, m_value)
 	return new_membership_table
 
 def max_membership_change(mem_old, mem_new):
@@ -202,6 +207,33 @@ def evaluate(dataset, membership_table):
 		i += 1
 	return ret
 
+def calc_accuracy(membership_table, labels):
+	# Label <=50K, cluster 1
+	A1 = 0
+	# Label <=50K, cluster 2
+	A2 = 0
+	# Label >50K, cluster 1
+	B1 = 0
+	# Label >50K, cluster 2
+	B2 = 0
+	for i in range(len(labels)):
+		if(membership_table[i][0] > membership_table[i][1]):
+			if (labels == '<=50K'):
+				A1 += 1
+			else:
+				B1 += 1
+		else:
+			if (labels == '<=50K'):
+				A2 += 1
+			else:
+				B2 += 1
+
+	# accuracy if cluster 1 is <=50K
+	accuracyA = (A1 + B2) / len(labels)
+	# accuracy if cluster 1 is >50K
+	accuracyB = (A2 + B1) / len(labels)
+	return accuracyA, accuracyB
+
 filename = "CensusIncome/CencusIncome.data.txt"
 dataset = import_data(filename, [1,3,5,6,7,8,9,13])
 dataset, datalabels = separate_labels(dataset)
@@ -214,7 +246,6 @@ testset = convert_to_int(testset)
 
 dataset = normalize_data(dataset)
 testset = normalize_data(testset)
-
 
 num_clusters = int(input("Num Clusters: "))
 m_value = int(input("M: "))
@@ -233,7 +264,22 @@ while(not is_stop(membership_table, new_membership_table, epsilon)):
 	new_membership_table = update_membership(dataset, membership_table, num_clusters, m_value)
 	print(evaluate(dataset, new_membership_table))
 
+centroids = calculate_centroid(dataset, new_membership_table, num_clusters, m_value)
+test_membership_table = calc_membership(centroids, testset, num_clusters, m_value)
+print(evaluate(testset, test_membership_table))
 
+
+print("Dataset accuracy")
+print("------------------")
+accuracyA,accuracyB = calc_accuracy(new_membership_table, datalabels)
+print("accuracy if cluster 1 is <=50K: " + repr(accuracyA * 100))
+print("accuracy if cluster 1 is >50K: " + repr(accuracyB * 100))
+
+print("Testset accuracy")
+print("------------------")
+accuracyA,accuracyB = calc_accuracy(test_membership_table, testlabels)
+print("accuracy if cluster 1 is <=50K: " + repr(accuracyA * 100))
+print("accuracy if cluster 1 is >50K: " + repr(accuracyB * 100))
 # for data in dataset:
 # 	print(data)
 # print("TEST VVVVVVVV DATA ^^^^^^^^^^")

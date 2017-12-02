@@ -8,20 +8,58 @@ def import_file_data(filename):
 		line = line.strip()
 		attr = line.split(", ")
 		ret.append(attr)
-		print(attr)
+		# print(attr)
 	return ret
 
-def import_data(filename, remove_column)
-	dataset = import_file_data(filename)
-	dataset = data[0:len(data)-1]
+def separate_labels(dataset, label_column=-1):
+	if (label_column == -1):
+		label_column = len(dataset[0])-1
+	labels = []
+	for data in dataset:
+		labels.append(data[label_column])
+		del data[label_column]
+	return dataset, labels
+
+def drop_columns(dataset, remove_column):
 	for data in dataset:
 		for col in sorted(remove_column, reverse=True):
-			del my_list[col]
-	return data
+			del data[col]
+	return dataset
+
+def import_data(filename, remove_column):
+	dataset = import_file_data(filename)
+	dataset = dataset[0:len(dataset)-1]
+	dataset = drop_columns(dataset, remove_column)
+	return dataset
+
+def import_test(filename, remove_column):
+	dataset = import_file_data(filename)
+	dataset = dataset[1:len(dataset)-1]
+	dataset = drop_columns(dataset, remove_column)
+	return dataset
+
+def convert_to_int(dataset):
+	ret = []
+	for data in dataset:
+		ret.append([int(att) for att in data])
+		# print(data)
+	return ret
 
 filename = "CensusIncome/CencusIncome.data.txt"
-dataset = import_file_data(filename, )
-print(dataset)
+dataset = import_data(filename, [1,3,5,6,7,8,9,13])
+dataset, datalabels = separate_labels(dataset)
+filename = "CensusIncome/CencusIncome.test.txt"
+testset = import_test(filename, [1,3,5,6,7,8,9,13])
+testset, testlabels = separate_labels(testset)
+
+dataset = convert_to_int(dataset)
+testset = convert_to_int(testset)
+
+for data in dataset:
+	print(data)
+print("TEST VVVVVVVV DATA ^^^^^^^^^^")
+for data in testset:
+	print(data)
 
 # data_frame = pandas.read_csv("CencusIncome.data.csv")
 # # print(data.as_matrix())

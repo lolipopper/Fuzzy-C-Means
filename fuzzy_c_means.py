@@ -66,10 +66,25 @@ def init_membership_table(dataset, num_clusters):
 	i = 0
 	membership_table = []
 	for data in dataset:
-		membership_data = [random.random() for attr in data]
+		membership_data = [random.random() for x in range(num_clusters)]
 		total = sum(membership_data)
 		membership_data = [x/total for x in membership_data]
 		membership_table.append(membership_data)
+	return membership_table
+
+def init_membership_table_with_labels(dataset, num_clusters, labels):
+	i = 0
+	membership_table = []
+	# print(labels)
+	for data in dataset:
+		if (labels[i] == '<=50K'):
+			# print('1' + labels[i])
+			membership_data = [1.0,0.0]
+		else:
+			# print('2' + labels[i])
+			membership_data = [0.0,1.0]
+		membership_table.append(membership_data)
+		i += 1
 	return membership_table
 
 def data_times_number(data, number):
@@ -180,6 +195,7 @@ def evaluate(dataset, membership_table):
 	for data in dataset:
 		temp = 0
 		for j in range(len(membership_table[i])):
+			# print(membership_table[i])
 			if(membership_table[i][j] > membership_table[i][temp]):
 				temp = j
 		ret[temp] += 1
@@ -204,17 +220,17 @@ num_clusters = int(input("Num Clusters: "))
 m_value = int(input("M: "))
 epsilon = float(input("Epsilon: "))
 membership_table = init_membership_table(dataset, num_clusters)
+# membership_table = init_membership_table_with_labels(dataset, num_clusters, datalabels)
 # print(data_add_data([1,1,2,3,1],[1,2,3]))
 # print(data_times_number(dataset[0],2))
 # print(calculate_centroid(dataset, membership_table, num_clusters, m_value))
+# print(evaluate(dataset, membership_table))
 new_membership_table = update_membership(dataset, membership_table, num_clusters, m_value)
-print("COBA PRINT")
+
 
 while(not is_stop(membership_table, new_membership_table, epsilon)):
-	print("MASUK WHILE")
 	membership_table = new_membership_table
 	new_membership_table = update_membership(dataset, membership_table, num_clusters, m_value)
-	print("COBA EVAL")
 	print(evaluate(dataset, new_membership_table))
 
 

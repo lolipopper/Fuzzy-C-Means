@@ -248,7 +248,7 @@ dataset = normalize_data(dataset)
 testset = normalize_data(testset)
 
 num_clusters = int(input("Num Clusters: "))
-m_value = int(input("M: "))
+m_value = float(input("M: "))
 epsilon = float(input("Epsilon: "))
 membership_table = init_membership_table(dataset, num_clusters)
 # membership_table = init_membership_table_with_labels(dataset, num_clusters, datalabels)

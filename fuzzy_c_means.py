@@ -184,7 +184,7 @@ def max_membership_change(mem_old, mem_new):
 			temp = abs(mem_new[i][j] - mem_old[i][j])
 			if(temp>max_changes):
 				max_changes = temp
-	print(max_changes)
+	print("Max change: " + str(max_changes))
 	return max_changes
 
 def is_stop(mem_old, mem_new, epsilon):
@@ -250,6 +250,8 @@ testset = normalize_data(testset)
 num_clusters = int(input("Num Clusters: "))
 m_value = float(input("M: "))
 epsilon = float(input("Epsilon: "))
+
+print("\nInitial state")
 membership_table = init_membership_table(dataset, num_clusters)
 # membership_table = init_membership_table_with_labels(dataset, num_clusters, datalabels)
 # print(data_add_data([1,1,2,3,1],[1,2,3]))
@@ -258,10 +260,12 @@ membership_table = init_membership_table(dataset, num_clusters)
 # print(evaluate(dataset, membership_table))
 new_membership_table = update_membership(dataset, membership_table, num_clusters, m_value)
 
-
+num_iterasi = 1
 while(not is_stop(membership_table, new_membership_table, epsilon)):
 	membership_table = new_membership_table
 	new_membership_table = update_membership(dataset, membership_table, num_clusters, m_value)
+	print("\nIterasi " + str(num_iterasi))
+	num_iterasi += 1
 	print(evaluate(dataset, new_membership_table))
 
 centroids = calculate_centroid(dataset, new_membership_table, num_clusters, m_value)

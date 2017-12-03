@@ -304,7 +304,6 @@ print("accuracy if cluster 1 is >50K: " + repr(accuracyB * 100))
 # 	cluster_centers = []
 # 	for center_idx in range(num_clusters):
 # 		for data in data_matrix_numeric_noclass:
-			
 
 
 # def calculateMembershipMatrix():
